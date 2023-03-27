@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"google.golang.org/grpc/reflection"
 	"net"
 	"net/http"
 	"time"
@@ -156,6 +157,7 @@ func grpcSrvRun(ctx context.Context, port uint, movierService movier.MovierServi
 func newGRPCServer(port uint, movierService movier.MovierServiceServer) *grpc.Server {
 	srv := tracedGRPC.NewServer(tracedGRPC.NewParams())
 
+	reflection.Register(srv)
 	movier.RegisterMovierServiceServer(srv, movierService)
 
 	shutdownKey := fmt.Sprintf("grpc:%d", port)
