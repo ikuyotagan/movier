@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"google.golang.org/grpc/reflection"
 	"net"
 	"net/http"
 	"time"
@@ -14,6 +13,7 @@ import (
 	"github.com/spf13/cobra"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 
 	grpcAPI "github.com/ikuyotagan/movier/internal/api/grpc"
 	httpAPI "github.com/ikuyotagan/movier/internal/api/http"
