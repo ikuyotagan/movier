@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+
 	movier "github.com/ikuyotagan/movier/pb"
 	"github.com/ikuyotagan/movier/pkg/sre/tracing"
 )

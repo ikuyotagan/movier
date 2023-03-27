@@ -4,8 +4,9 @@ consumes:
 host: api.movier.com
 info:
   contact:
-    name: ikuyotagan
-    url: https://ikuyotagan.dev
+    email: ra9dev@gmail.com
+    name: ra9dev
+    url: https://ra9.dev
   description: movier based project
   termsOfService: https://github.com/ikuyotagan/movier
   title: movier API

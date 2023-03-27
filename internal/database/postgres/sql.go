@@ -2,8 +2,9 @@ package postgres
 
 import (
 	"context"
+
 	"github.com/jackc/pgconn"
-	"github.com/jackc/pgx/v4"
+	pgx "github.com/jackc/pgx/v4"
 )
 
 // QueryExecutor ответственнен ТОЛЬКО за выполнение sql queries

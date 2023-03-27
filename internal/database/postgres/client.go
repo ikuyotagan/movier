@@ -4,13 +4,14 @@ package postgres
 import (
 	"context"
 	"fmt"
-	"github.com/ikuyotagan/movier/internal/config"
-	"github.com/ikuyotagan/movier/pkg/sre/log"
-	"github.com/ra9dev/shutdown"
 	"time"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	_ "github.com/lib/pq"
+	"github.com/ra9dev/shutdown"
+
+	"github.com/ikuyotagan/movier/internal/config"
+	"github.com/ikuyotagan/movier/pkg/sre/log"
 )
 
 const (

@@ -2,8 +2,9 @@ package postgres
 
 import (
 	"context"
-	"github.com/ikuyotagan/movier/internal/database"
 	"sync"
+
+	"github.com/ikuyotagan/movier/internal/database"
 )
 
 // Database имплементация

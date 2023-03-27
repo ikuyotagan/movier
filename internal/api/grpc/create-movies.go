@@ -3,9 +3,10 @@ package grpc
 import (
 	"context"
 
+	"go.opentelemetry.io/otel/trace"
+
 	movier "github.com/ikuyotagan/movier/pb"
 	"github.com/ikuyotagan/movier/pkg/sre/tracing"
-	"go.opentelemetry.io/otel/trace"
 )
 
 func (s *MovierService) CreateMoviesBatch(ctx context.Context, req *movier.CreateMoviesBatchRequest) (*movier.CreateMoviesBatchResponse, error) {

@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"github.com/ikuyotagan/movier/internal/business/movies"
-	"github.com/ikuyotagan/movier/pb"
+	movier "github.com/ikuyotagan/movier/pb"
 )
 
 type MovierService struct {
