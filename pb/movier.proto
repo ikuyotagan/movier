@@ -1,0 +1,183 @@
+syntax = "proto3";
+
+package movier;
+option go_package = "github.com/ikuyotagan/movier/pb/movier";
+
+import "google/protobuf/timestamp.proto";
+
+// The movier service definition.
+service MovierService {
+  // Syncs movies from external sources
+  rpc CreateMoviesBatch (CreateMoviesBatchRequest) returns (CreateMoviesBatchResponse) {}
+  rpc GetMovies (GetMoviesRequest) returns (GetMoviesResponse) {}
+  rpc DeleteMovies (DeleteMoviesRequest) returns (DeleteMoviesResponse) {}
+
+  rpc GetPersons (GetPersonsRequest) returns (GetPersonsResponse) {}
+  rpc CreatePersonsBatch (CreatePersonsRequest) returns (CreatePersonsResponse) {}
+
+  rpc GetGenres (GetGenresRequest) returns (GetGenresResponse) {}
+  rpc CreateGenresBatch (CreateGenresRequest) returns (CreateGenresResponse) {}
+}
+
+// The response message containing the greetings
+message CreateMoviesBatchRequest {
+  repeated CreateMovieParams movies = 1;
+}
+
+message DeleteMoviesRequest {
+  repeated uint64 ids = 1;
+}
+
+message DeleteMoviesResponse {
+  bool success = 1;
+}
+
+message GetMoviesRequest {
+  optional string query = 1;
+  repeated uint64 ids = 2;
+  repeated uint64 genre_ids = 3;
+  optional DateFilter date_of_released = 4;
+  optional RatingFilter rating = 5;
+  repeated uint64 actor_ids = 6;
+  repeated uint64 director_ids = 7;
+  repeated uint64 screenwriter_ids = 8;
+  repeated uint64 country_ids = 9;
+
+  uint64 page = 15;
+  uint64 limit = 16;
+}
+
+message GetMoviesResponse {
+  repeated Movie movies = 1;
+  uint64 total_pages = 2;
+  uint64 total_limit = 3;
+}
+
+message CreateMovieParams {
+  repeated ExternalInfo external_info = 1;
+  repeated uint64 genre_ids = 2;
+  google.protobuf.Timestamp date_of_released = 3;
+  string poster_url = 4;
+  string name = 5;
+  repeated uint64 actor_ids = 6;
+  repeated uint64 director_ids = 7;
+  repeated uint64 screenwriter_ids = 8;
+  MPAARating rating = 9;
+  Country country = 10;
+}
+
+message CreateMoviesBatchResponse {
+  repeated uint64 ids = 1;
+}
+
+message Movie {
+  uint64 id = 1;
+  repeated ExternalInfo external_info = 2;
+  repeated Genre genres = 3;
+  google.protobuf.Timestamp date_of_filmed = 4;
+  string poster_url = 5;
+  string name = 6;
+  repeated Person actors = 7;
+  repeated Person director = 8;
+  repeated Person screenwriter = 9;
+  MPAARating rating = 10;
+  Country country = 11;
+}
+
+message Person {
+  uint64 id = 1;
+  string name = 2;
+  string surname = 3;
+  string second_name = 4;
+  google.protobuf.Timestamp date_of_birth = 5;
+  string profile_picture_url = 6;
+}
+
+message Country {
+  uint64 id = 1;
+  string code = 2;
+  string name = 3;
+}
+
+message ExternalInfo {
+  int64 ext_id = 1;
+  ExternalSource ext_id_source = 2;
+  float ext_rating = 3;
+  uint64 rates = 4;
+}
+
+enum ExternalSource {
+  SOURCE_UNSPECIFIED = 0;
+  SOURCE_KINOPOISK = 1;
+  SOURCE_IMDB = 2;
+}
+
+message Genre {
+  uint64 id = 1;
+  string code = 2;
+}
+
+enum MPAARating {
+  MPAA_RATING_UNSPECIFIED = 0;
+  MPAA_RATING_G = 1;
+  MPAA_RATING_PG = 2;
+  MPAA_RATING_PG_13 = 3;
+  MPAA_RATING_R = 4;
+  MPAA_RATING_NC_17 = 5;
+}
+
+message IDArray {
+  repeated uint64 id=1;
+}
+
+message DateFilter {
+  optional google.protobuf.Timestamp from = 1;
+  optional google.protobuf.Timestamp to = 2;
+}
+
+message RatingFilter {
+  optional float from = 1;
+  optional float to = 2;
+}
+
+message GetPersonsRequest {
+  repeated uint64 ids = 1;
+  repeated string name = 2;
+  repeated string surname = 3;
+  repeated string second_name = 4;
+  DateFilter date_of_birth = 5;
+
+  uint64 page = 10;
+  uint64 limit = 11;
+}
+
+message GetPersonsResponse {
+  repeated Person persons = 1;
+
+  uint64 total_pages = 2;
+  uint64 total_limit = 3;
+}
+
+message CreatePersonsRequest {
+  Person persons = 1;
+}
+
+message CreatePersonsResponse {
+  repeated uint64 ids = 1;
+}
+
+message GetGenresRequest {
+
+}
+
+message GetGenresResponse {
+  repeated Genre genres = 1;
+}
+
+message CreateGenresRequest {
+  Genre genres = 1;
+}
+
+message CreateGenresResponse {
+  repeated uint64 ids = 1;
+}

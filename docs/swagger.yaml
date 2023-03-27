@@ -1,0 +1,24 @@
+basePath: /v1
+consumes:
+- application/json
+host: api.movier.com
+info:
+  contact:
+    name: ikuyotagan
+    url: https://ikuyotagan.dev
+  description: movier based project
+  termsOfService: https://github.com/ikuyotagan/movier
+  title: movier API
+  version: "1.0"
+paths: {}
+produces:
+- application/json
+schemes:
+- http
+- https
+securityDefinitions:
+  jwt:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
