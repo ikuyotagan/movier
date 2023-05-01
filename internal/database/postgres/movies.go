@@ -2,17 +2,17 @@ package postgres
 
 import (
 	"context"
-	movier "github.com/ikuyotagan/movier/pb"
-	"github.com/ikuyotagan/movier/pkg/sre/log"
-	"golang.org/x/sync/errgroup"
-	"google.golang.org/protobuf/types/known/timestamppb"
 	"strconv"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
+	"golang.org/x/sync/errgroup"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/ikuyotagan/movier/internal/database"
 	"github.com/ikuyotagan/movier/internal/models"
+	movier "github.com/ikuyotagan/movier/pb"
+	"github.com/ikuyotagan/movier/pkg/sre/log"
 )
 
 const (

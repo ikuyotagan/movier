@@ -2,8 +2,10 @@ package movies
 
 import (
 	"context"
-	"github.com/ikuyotagan/movier/internal/models"
+
 	"golang.org/x/sync/errgroup"
+
+	"github.com/ikuyotagan/movier/internal/models"
 )
 
 func (m *Manager) GetMovies(ctx context.Context, filter *models.MoviesFilter) (movies []*models.Movie, err error) {
