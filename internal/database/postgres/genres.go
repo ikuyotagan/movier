@@ -4,7 +4,6 @@ import (
 	"context"
 
 	sq "github.com/Masterminds/squirrel"
-
 	"github.com/ikuyotagan/movier/internal/database"
 	"github.com/ikuyotagan/movier/internal/models"
 )
@@ -24,121 +23,89 @@ func NewGenresRepository(db QueryExecutor) database.GenresRepository {
 }
 
 // Create genres
-func (l GenresRepository) Create(ctx context.Context, genre []*models.Genre) ([]*models.Genre, error) {
-	if len(genre) == 0 {
+func (l *GenresRepository) Create(ctx context.Context, genres []*models.Genre) ([]uint64, error) {
+	if len(genres) == 0 {
 		return nil, database.ErrEmptyStruct
 	}
-	//
-	//qb := sq.
-	//	Insert(genresTable).
-	//	Columns(
-	//		"code",
-	//		"title",
-	//	).
-	//	Values(
-	//		layer.Code,
-	//		layer.Title,
-	//	).
-	//	PlaceholderFormat(sq.Dollar)
-	//
-	//executor, err := executor(ctx, l.db, role.Write)
-	//if err != nil {
-	//	return err
-	//}
-	//
-	//if _, err := executor.Execx(ctx, qb); err != nil {
-	//	return err
-	//}
+	qb := sq.
+		Insert(genresTable).
+		Columns(
+			"name",
+		).
+		Suffix("RETURNING id").
+		PlaceholderFormat(sq.Dollar)
+	for _, genre := range genres {
+		qb = qb.Values(
+			genre.Code,
+		)
+	}
 
-	return nil, nil
+	sql, args, err := qb.ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := l.db.Query(ctx, sql, args...)
+	if err != nil {
+		return nil, err
+	}
+	var ids []uint64
+	for rows.Next() {
+		id := uint64(0)
+		err := rows.Scan(&id)
+		if err != nil {
+			return nil, err
+		}
+		ids = append(ids, id)
+	}
+
+	return ids, nil
 }
 
 // All get genres
-func (l GenresRepository) All(ctx context.Context, filter *models.GenresFilter) ([]*models.Genre, error) {
-	//qb := sq.Select("code", "title").
-	//	From(genresTable).
-	//	PlaceholderFormat(sq.Dollar)
-	//
-	//if filter != nil {
-	//	if len(filter.Codes) > 0 {
-	//		qb = qb.Where(sq.Eq{"code": filter.Codes})
-	//	}
-	//
-	//	if len([]rune(filter.Query)) > 3 {
-	//		qb = qb.Where("title ilike ?", "%"+filter.Query+"%")
-	//	}
-	//}
-	//
-	//qb = qb.OrderBy("code")
-	//
-	//executor, err := executor(ctx, l.db, role.Read)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//
-	//result := make([]*models.Layer, 0)
-	//if err := executor.Selectx(ctx, &result, qb); err != nil {
-	//	return nil, err
-	//}
-	return nil, nil
+func (l *GenresRepository) All(ctx context.Context, filter *models.GenresFilter) ([]*models.Genre, error) {
+	qb := sq.Select("id", "name").
+		From(genresTable).
+		OrderBy("id").
+		PlaceholderFormat(sq.Dollar)
+
+	result := make([]*models.Genre, 0)
+	sql, args, err := qb.ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := l.db.Query(ctx, sql, args...)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		id := uint64(0)
+		name := ""
+		err := rows.Scan(&id, &name)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, &models.Genre{
+			Id:   id,
+			Code: name,
+		})
+	}
+	return result, nil
 }
 
 // All get genres
-func (l GenresRepository) Count(ctx context.Context, filter *models.GenresFilter) (uint64, error) {
-	//qb := sq.Select("code", "title").
-	//	From(genresTable).
-	//	PlaceholderFormat(sq.Dollar)
-	//
-	//if filter != nil {
-	//	if len(filter.Codes) > 0 {
-	//		qb = qb.Where(sq.Eq{"code": filter.Codes})
-	//	}
-	//
-	//	if len([]rune(filter.Query)) > 3 {
-	//		qb = qb.Where("title ilike ?", "%"+filter.Query+"%")
-	//	}
-	//}
-	//
-	//qb = qb.OrderBy("code")
-	//
-	//executor, err := executor(ctx, l.db, role.Read)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//
-	//result := make([]*models.Layer, 0)
-	//if err := executor.Selectx(ctx, &result, qb); err != nil {
-	//	return nil, err
-	//}
+func (l *GenresRepository) Count(ctx context.Context, filter *models.GenresFilter) (uint64, error) {
 	return 0, nil
 }
 
 // Update update layer
-func (l GenresRepository) Update(ctx context.Context, layer *models.Genre) (*models.Genre, error) {
-	//if layer == nil {
-	//	return database.ErrEmptyStruct
-	//}
-	//
-	//qb := sq.
-	//	Update(genresTable).
-	//	Where(sq.Eq{"code": layer.Code}).
-	//	Set("title", layer.Title).
-	//	PlaceholderFormat(sq.Dollar)
-	//
-	//sql, args, err := qb.ToSql()
-	//if err != nil {
-	//	return err
-	//}
-	//
-	//if _, err := l.db.Exec(ctx, sql, args); err != nil {
-	//	return err
-	//}
-
+func (l *GenresRepository) Update(ctx context.Context, layer *models.Genre) (*models.Genre, error) {
 	return nil, nil
 }
 
 // Delete delete layer
-func (l GenresRepository) Delete(ctx context.Context, genreIDs []uint64) error {
+func (l *GenresRepository) Delete(ctx context.Context, genreIDs []uint64) error {
 	qb := sq.Delete(genresTable).
 		Where(sq.Eq{"id": genreIDs}).
 		PlaceholderFormat(sq.Dollar)

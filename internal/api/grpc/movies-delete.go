@@ -8,10 +8,13 @@ import (
 )
 
 func (s *MovierService) DeleteMovies(ctx context.Context, req *movier.DeleteMoviesRequest) (*movier.DeleteMoviesResponse, error) {
-	ctx, span := tracing.StartSpan(ctx, "grpc", "exampleService.SayHello")
+	ctx, span := tracing.StartSpan(ctx, "grpc", "movierService.DeleteMovies")
 	defer span.End()
-
-	exampleInternalBusinessLogicCall(ctx)
-
-	return &movier.DeleteMoviesResponse{}, nil
+	err := s.movieManager.DeleteMovies(ctx, req.Ids)
+	if err != nil {
+		return nil, err
+	}
+	return &movier.DeleteMoviesResponse{
+		Success: true,
+	}, nil
 }

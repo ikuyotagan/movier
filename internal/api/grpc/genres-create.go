@@ -8,10 +8,15 @@ import (
 )
 
 func (s *MovierService) CreateGenresBatch(ctx context.Context, req *movier.CreateGenresRequest) (*movier.CreateGenresResponse, error) {
-	ctx, span := tracing.StartSpan(ctx, "grpc", "exampleService.SayHello")
+	ctx, span := tracing.StartSpan(ctx, "grpc", "movierService.CreateGenresBatch")
 	defer span.End()
 
-	exampleInternalBusinessLogicCall(ctx)
+	ids, err := s.movieManager.CreateGenres(ctx, req.Genres)
+	if err != nil {
+		return nil, err
+	}
 
-	return &movier.CreateGenresResponse{}, nil
+	return &movier.CreateGenresResponse{
+		Ids: ids,
+	}, nil
 }

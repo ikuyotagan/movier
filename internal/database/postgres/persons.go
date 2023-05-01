@@ -24,7 +24,7 @@ func NewPersonsRepository(db QueryExecutor) database.PersonsRepository {
 }
 
 // Create persons
-func (l PersonsRepository) Create(ctx context.Context, persons []*models.Person) ([]*models.Person, error) {
+func (l PersonsRepository) Create(ctx context.Context, persons []*models.Person) ([]uint64, error) {
 	if persons == nil {
 		return nil, database.ErrEmptyStruct
 	}

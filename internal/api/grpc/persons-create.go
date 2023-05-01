@@ -8,7 +8,7 @@ import (
 )
 
 func (s *MovierService) CreatePersonsBatch(ctx context.Context, req *movier.CreatePersonsRequest) (*movier.CreatePersonsResponse, error) {
-	ctx, span := tracing.StartSpan(ctx, "grpc", "exampleService.SayHello")
+	ctx, span := tracing.StartSpan(ctx, "grpc", "movierService.SayHello")
 	defer span.End()
 
 	exampleInternalBusinessLogicCall(ctx)

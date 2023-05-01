@@ -8,10 +8,15 @@ import (
 )
 
 func (s *MovierService) GetMovies(ctx context.Context, req *movier.GetMoviesRequest) (*movier.GetMoviesResponse, error) {
-	ctx, span := tracing.StartSpan(ctx, "grpc", "exampleService.SayHello")
+	ctx, span := tracing.StartSpan(ctx, "grpc", "movierService.SayHello")
 	defer span.End()
 
-	exampleInternalBusinessLogicCall(ctx)
+	movies, err := s.movieManager.GetMovies(ctx, req)
+	if err != nil {
+		return nil, err
+	}
 
-	return &movier.GetMoviesResponse{}, nil
+	return &movier.GetMoviesResponse{
+		Movies: movies,
+	}, nil
 }

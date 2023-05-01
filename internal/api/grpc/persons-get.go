@@ -7,11 +7,10 @@ import (
 	"github.com/ikuyotagan/movier/pkg/sre/tracing"
 )
 
+// ToDo:: доделать если все же будет нужно
 func (s *MovierService) GetPersons(ctx context.Context, req *movier.GetPersonsRequest) (*movier.GetPersonsResponse, error) {
-	ctx, span := tracing.StartSpan(ctx, "grpc", "exampleService.SayHello")
+	ctx, span := tracing.StartSpan(ctx, "grpc", "movierService.GetPersons")
 	defer span.End()
-
-	exampleInternalBusinessLogicCall(ctx)
 
 	return &movier.GetPersonsResponse{}, nil
 }

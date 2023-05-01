@@ -101,8 +101,8 @@ message Country {
 
 message ExternalInfo {
   int64 ext_id = 1;
-  ExternalSource ext_id_source = 2;
-  float ext_rating = 3;
+  ExternalSource source = 2;
+  float rating = 3;
   uint64 rates = 4;
 }
 
@@ -166,16 +166,14 @@ message CreatePersonsResponse {
   repeated uint64 ids = 1;
 }
 
-message GetGenresRequest {
-
-}
+message GetGenresRequest {}
 
 message GetGenresResponse {
   repeated Genre genres = 1;
 }
 
 message CreateGenresRequest {
-  Genre genres = 1;
+  repeated Genre genres = 1;
 }
 
 message CreateGenresResponse {

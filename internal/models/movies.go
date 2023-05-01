@@ -7,6 +7,9 @@ type (
 	MovieCreateParams = movier.CreateMovieParams
 	MoviesFilter      = movier.GetMoviesRequest
 
+	ExternalInfo = movier.ExternalInfo
+	Rating       = movier.MPAARating
+
 	Person        = movier.Person
 	PersonsFilter = movier.GetPersonsRequest
 

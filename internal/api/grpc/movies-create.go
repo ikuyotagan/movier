@@ -10,12 +10,17 @@ import (
 )
 
 func (s *MovierService) CreateMoviesBatch(ctx context.Context, req *movier.CreateMoviesBatchRequest) (*movier.CreateMoviesBatchResponse, error) {
-	ctx, span := tracing.StartSpan(ctx, "grpc", "exampleService.SayHello")
+	ctx, span := tracing.StartSpan(ctx, "grpc", "movierService.CreateMoviesBatch")
 	defer span.End()
 
-	exampleInternalBusinessLogicCall(ctx)
+	ids, err := s.movieManager.CreateMovies(ctx, req.Movies)
+	if err != nil {
+		return nil, err
+	}
 
-	return &movier.CreateMoviesBatchResponse{}, nil
+	return &movier.CreateMoviesBatchResponse{
+		Ids: ids,
+	}, nil
 }
 
 // ExampleInternalBusinessLogicCall is an example of passing ctx and span to internal business logic.
