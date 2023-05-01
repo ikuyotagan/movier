@@ -1,0 +1,25 @@
+basePath: /v1
+consumes:
+- application/json
+host: api.movier.com
+info:
+  contact:
+    email: ra9dev@gmail.com
+    name: ra9dev
+    url: https://ra9.dev
+  description: movier based project
+  termsOfService: https://github.com/ikuyotagan/movier
+  title: movier API
+  version: "1.0"
+paths: {}
+produces:
+- application/json
+schemes:
+- http
+- https
+securityDefinitions:
+  jwt:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

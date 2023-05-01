@@ -1,0 +1,113 @@
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/ra9dev/shutdown"
+	"github.com/spf13/cobra"
+
+	"github.com/ikuyotagan/movier/internal/config"
+	"github.com/ikuyotagan/movier/pkg/sre/log"
+	"github.com/ikuyotagan/movier/pkg/sre/tracing"
+)
+
+func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	rootCmd := &cobra.Command{
+		Use:   "movier",
+		Short: "Main entry-point command for the application",
+	}
+
+	cfg, err := config.NewConfig()
+	if err != nil {
+		log.Panicf(ctx, "failed to prepare config: %v", err)
+	}
+
+	if err = setupLogger(cfg); err != nil {
+		log.Panic(ctx, err)
+	}
+
+	if err = setupTracing(cfg); err != nil {
+		log.Panic(ctx, err)
+	}
+
+	rootCmd.AddCommand(
+		APIServerCMD(cfg),
+	)
+
+	done := make(chan struct{})
+
+	go func() {
+		defer close(done)
+
+		defer cancel()
+
+		if shutdownErr := shutdown.Wait(); shutdownErr != nil {
+			log.NoContext().Errorf("failed to shut down: %v", shutdownErr)
+
+			return
+		}
+
+		log.NoContext().Info("Shutdown has been completed!")
+	}()
+
+	if err = rootCmd.ExecuteContext(ctx); err != nil {
+		err = fmt.Errorf("failed to execute root cmd: %w", err)
+
+		log.NoContext().Fatal(err)
+	}
+
+	<-done
+}
+
+func setupTracing(cfg config.Config) error {
+	provider, err := tracing.NewProvider(tracing.Config{
+		ServiceName:    config.ServiceName,
+		ServiceVersion: config.ServiceVersion,
+		Environment:    cfg.Env.String(),
+		Endpoint:       cfg.Tracing.Endpoint,
+		Enabled:        cfg.Tracing.Enabled,
+	})
+	if err != nil {
+		return fmt.Errorf("failed to prepare tracing provider: %w", err)
+	}
+
+	shutdown.MustAdd("tracing", func(ctx context.Context) {
+		log.NoContext().Info("Shutting down tracing provider")
+
+		if err = provider.Shutdown(ctx); err != nil {
+			log.NoContext().Error(err)
+
+			return
+		}
+
+		log.NoContext().Info("Tracing provider shutdown succeeded!")
+	})
+
+	return nil
+}
+
+func setupLogger(cfg config.Config) error {
+	loggerParams := log.NewParams(cfg.Env, cfg.LogLevel)
+
+	logger, err := log.NewLogger(loggerParams)
+	if err != nil {
+		return fmt.Errorf("failed to prepare logger: %w", err)
+	}
+
+	log.RegisterLogger(logger)
+
+	shutdown.MustAdd("logger", func(_ context.Context) {
+		log.NoContext().Infof("Flushing log buffer...")
+
+		// ignoring err because there is no buffer for stderr
+		_ = log.Sync()
+
+		log.NoContext().Infof("Log buffer flushed!")
+	})
+
+	return nil
+}
